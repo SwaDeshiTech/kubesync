@@ -1,0 +1,10 @@
+port: 8443
+mongo:
+  uri: "mongodb://localhost:27017"
+  username: "admin"
+  password: "password"
+  maxPoolSize: 100
+  minPoolSize: 10
+  maxIdleTime: 5
+  maxConnIdleTime: 10
+  connectTimeout: 10
