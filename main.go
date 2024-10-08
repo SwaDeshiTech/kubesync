@@ -30,6 +30,7 @@ func main() {
 		k8sKubeClient, err := client.GetClient()
 		if err != nil {
 			log.Println("failed to obtain client set", err)
+			return
 		}
 
 		kubeClient := client.KubeClient{
