@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/main.go",
+            "args": [],
+            "stopOnEntry": false,
+            "console": "integratedTerminal",
+            "env": {}
+        } 
+    ]
+}

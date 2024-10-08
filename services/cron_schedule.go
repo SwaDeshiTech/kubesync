@@ -6,6 +6,7 @@ import (
 	"time"
 
 	v1 "github.com/SwaDeshiTech/arsenal/pkg/mongo-connector/v1"
+	uuidv1 "github.com/SwaDeshiTech/arsenal/pkg/uuid/v1"
 	customerror "github.com/SwaDeshiTech/kubesync/customError"
 	"github.com/SwaDeshiTech/kubesync/dto"
 	"github.com/SwaDeshiTech/kubesync/entity"
@@ -24,8 +25,16 @@ func AddCronSchedule(cronScheduleConfigRequest dto.CronScheduleConfigRequest) (d
 		return dto.CronScheduleConfigResponse{}, customerror.HttpError("Failed to map the DTO & Entity", http.StatusBadRequest)
 	}
 
+	uniqueId, err := uuidv1.GenerateUID()
+	if err != nil {
+		log.Println("failed to generate uid", err)
+		return dto.CronScheduleConfigResponse{}, customerror.HttpError("Cron job could not be created", http.StatusInternalServerError)
+	}
+
+	cronSchedule.UUID = uniqueId
 	cronSchedule.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
 	cronSchedule.Status = enums.Pending
+	cronSchedule.IsActive = true
 
 	err = cronSchedule.Insert()
 	if err != nil {
@@ -43,9 +52,9 @@ func AddCronSchedule(cronScheduleConfigRequest dto.CronScheduleConfigRequest) (d
 	return cronScheduleConfigResponse, customerror.Http{}
 }
 
-func GetCronSchedule(cronScheduleName string) (dto.CronScheduleConfigResponse, customerror.Http) {
+func GetCronSchedule(cronScheduleId string) (dto.CronScheduleConfigResponse, customerror.Http) {
 
-	filters := bson.M{"name": cronScheduleName}
+	filters := bson.M{"uuid": cronScheduleId}
 	sort := bson.D{{Key: "name", Value: 1}}
 
 	resultCriteria := v1.ResultCriteria{
@@ -75,11 +84,11 @@ func GetCronSchedule(cronScheduleName string) (dto.CronScheduleConfigResponse, c
 	return cronScheduleConfigResponse, customerror.Http{}
 }
 
-func UpdateCronSchedule(id string, status string) customerror.Http {
+func UpdateCronSchedule(uuid string, status string) customerror.Http {
 
 	resultCriteria := v1.ResultCriteria{
 		Filters: primitive.M{
-			"id": id,
+			"uuid": uuid,
 		},
 		Update: primitive.M{"$set": bson.M{
 			"status": status,
@@ -88,7 +97,7 @@ func UpdateCronSchedule(id string, status string) customerror.Http {
 
 	err := entity.UpdateCronSchedule(resultCriteria)
 	if err != nil {
-		log.Println("failed to update the status of request", id, status)
+		log.Println("failed to update the status of request", uuid, status)
 		return customerror.HttpError("Status could not be updated", http.StatusInternalServerError)
 	}
 

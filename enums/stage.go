@@ -1,10 +1,10 @@
 package enums
 
-type Status int
+type Status string
 
 const (
-	Pending Status = iota
-	Running
-	Success
-	Failed
+	Pending Status = "Pending"
+	Running Status = "Running"
+	Success Status = "Success"
+	Failed  Status = "Failed"
 )

@@ -14,13 +14,25 @@ import (
 )
 
 type CronSchedule struct {
-	ID                  primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	CronExpression      string             `bson:"cronExpression" json:"cronExpression"`
-	Status              enums.Status       `bson:"status" json:"status"`
-	JobName             string             `bson:"jobName" json:"jobName"`
-	JobDescription      string             `bson:"jobDescription" json:"jobDescription"`
-	KubernetesResources string             `bson:"kubernetesResources" json:"kubernetesResources"`
-	CreatedAt           primitive.DateTime `json:"createdAt" bson:"createdAt"`
+	ID             primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	UUID           string             `json:"uuid" bson:"uuid"`
+	CronExpression string             `json:"cronExpression" bson:"cronExpression"`
+	Status         enums.Status       `json:"status" bson:"status"`
+	JobName        string             `json:"jobName" bson:"jobName"`
+	JobDescription string             `json:"jobDescription" bson:"jobDescription"`
+	StartDate      string             `json:"startDate" bson:"startDate"`
+	EndDate        string             `json:"endDate" bson:"endDate"`
+	Priority       enums.Priority     `json:"priority" bson:"priority"`
+	Frequency      enums.Frequency    `json:"frequency" bson:"frequency"`
+	IsActive       bool               `json:"isActive" bson:"isActive"`
+	JobType        string             `json:"jobType" bson:"jobType"`
+	CreatedAt      primitive.DateTime `json:"createdAt" bson:"createdAt"`
+	Resources      []Resource         `json:"resources" bson:"resources"`
+}
+
+type Resource struct {
+	Name string `json:"name" bson:"name"`
+	Type string `json:"type" bson:"type"`
 }
 
 func (cronSchedule *CronSchedule) Insert() error {
