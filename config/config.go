@@ -12,8 +12,10 @@ import (
 var config Config
 
 type Config struct {
-	Port  int64 `yaml:"port"`
-	Mongo Mongo `yaml:"mongo"`
+	Port                  int64 `yaml:"port"`
+	Mongo                 Mongo `yaml:"mongo"`
+	DisableCronJob        bool  `yaml:"disableCronJob"`
+	DisableRESTController bool  `yaml:"disableRESTController"`
 }
 
 type Mongo struct {
