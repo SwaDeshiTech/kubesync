@@ -1,4 +1,6 @@
 port: 8443
+disableCronJob: true
+disableRESTController: true
 mongo:
   uri: "mongodb://localhost:27017"
   username: "admin"

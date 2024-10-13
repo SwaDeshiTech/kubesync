@@ -2,7 +2,11 @@ module github.com/SwaDeshiTech/kubesync
 
 go 1.22.5
 
-require gopkg.in/yaml.v2 v2.4.0
+require (
+	gopkg.in/yaml.v2 v2.4.0
+	k8s.io/api v0.31.1
+	k8s.io/apimachinery v0.31.1
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect
@@ -52,8 +56,6 @@ require (
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.31.1 // indirect
-	k8s.io/apimachinery v0.31.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340 // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
@@ -63,7 +65,7 @@ require (
 )
 
 require (
-	github.com/SwaDeshiTech/arsenal v0.0.0-20240816173917-5c774c81cbd7 // indirect
+	github.com/SwaDeshiTech/arsenal v0.0.0-20240816173917-5c774c81cbd7
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect
@@ -74,7 +76,7 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
-	go.mongodb.org/mongo-driver v1.16.0 // indirect
+	go.mongodb.org/mongo-driver v1.16.0
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
