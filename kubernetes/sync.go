@@ -19,21 +19,107 @@ func (syncResource *SyncResource) SyncResources() {
 		return
 	}
 
-	configMapSyncer := SyncK8s{
+	configMapSyncer1 := SyncK8s{
 		ClientSet:            k8sKubeClient,
 		SourceNameSpace:      syncResource.SourceNameSpace,
 		DestinationNameSpace: syncResource.DestinationNameSpace,
-		ResourceName:         "outbound",
+		ResourceName:         "outboundaddress",
 	}
+	configMapSyncer1.SyncConfigMap()
 
-	configMapSyncer.SyncConfigMap()
+	configMapSyncer2 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "confs",
+	}
+	configMapSyncer2.SyncConfigMap()
 
-	secretSyncer := SyncK8s{
+	configMapSyncer3 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "coredns",
+	}
+	configMapSyncer3.SyncConfigMap()
+
+	configMapSyncer4 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "corednstmpl",
+	}
+	configMapSyncer4.SyncConfigMap()
+
+	configMapSyncer5 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "blockedservices",
+	}
+	configMapSyncer5.SyncConfigMap()
+
+	configMapSyncer6 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "dns-config",
+	}
+	configMapSyncer6.SyncConfigMap()
+
+	configMapSyncer7 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "kube-root-ca.crt",
+	}
+	configMapSyncer7.SyncConfigMap()
+
+	secretSyncer1 := SyncK8s{
 		ClientSet:            k8sKubeClient,
 		SourceNameSpace:      syncResource.SourceNameSpace,
 		DestinationNameSpace: syncResource.DestinationNameSpace,
 		ResourceName:         "jfrog",
 	}
+	secretSyncer1.SyncSecret()
 
-	secretSyncer.SyncSecret()
+	secretSyncer2 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "az-sedockerreg",
+	}
+	secretSyncer2.SyncSecret()
+
+	secretSyncer3 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "az-sejfrogreg",
+	}
+	secretSyncer3.SyncSecret()
+
+	secretSyncer4 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "az-sejfrogregci",
+	}
+	secretSyncer4.SyncSecret()
+
+	secretSyncer5 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "certs",
+	}
+	secretSyncer5.SyncSecret()
+
+	secretSyncer6 := SyncK8s{
+		ClientSet:            k8sKubeClient,
+		SourceNameSpace:      syncResource.SourceNameSpace,
+		DestinationNameSpace: syncResource.DestinationNameSpace,
+		ResourceName:         "dockerjfrog-prodhub",
+	}
+	secretSyncer6.SyncSecret()
 }
