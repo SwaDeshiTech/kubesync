@@ -1,6 +1,7 @@
 port: 8443
 disableCronJob: true
 disableRESTController: true
+whitelistedNamespace: ["simbha", "simbhapt"]
 mongo:
   uri: "mongodb://localhost:27017"
   username: "admin"
