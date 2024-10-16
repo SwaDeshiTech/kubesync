@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -22,21 +21,17 @@ func SyncSecret(clientset *kubernetes.Clientset, sourceNamespace, targetNamespac
 	targetSecret := secret.DeepCopy()
 	targetSecret.Namespace = targetNamespace
 
+	err = clientset.CoreV1().Secrets(targetNamespace).Delete(ctx, secretName, metav1.DeleteOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to delete Secret %s in namespace %s: %w", secretName, targetNamespace, err)
+	}
+
 	_, err = clientset.CoreV1().Secrets(targetNamespace).Create(ctx, targetSecret, metav1.CreateOptions{})
 	if err != nil {
-		if errors.IsAlreadyExists(err) {
-			// If the Secret already exists, update it
-			_, err = clientset.CoreV1().Secrets(targetNamespace).Update(ctx, targetSecret, metav1.UpdateOptions{})
-			if err != nil {
-				return fmt.Errorf("failed to update Secret %s in namespace %s: %w", secretName, targetNamespace, err)
-			}
-			fmt.Printf("Secret %s synced from %s to %s\n", secretName, sourceNamespace, targetNamespace)
-		} else {
-			return fmt.Errorf("failed to create Secret %s in namespace %s: %w", secretName, targetNamespace, err)
-		}
-	} else {
-		fmt.Printf("Secret %s synced from %s to %s\n", secretName, sourceNamespace, targetNamespace)
+		return fmt.Errorf("failed to create Secret %s in namespace %s: %w", secretName, targetNamespace, err)
 	}
+
+	fmt.Printf("Secret %s synced from %s to %s\n", secretName, sourceNamespace, targetNamespace)
 
 	return nil
 }

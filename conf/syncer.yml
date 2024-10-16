@@ -1,0 +1,5 @@
+syncer:
+  - name: qa_cluster
+    configMapList: ["outboundaddress", "confs", "coredns", "corednstmpl", "blockedservices", "dns-config", "kube-root-ca.crt"]
+    secretList: ["az-sedockerreg", "az-sejfrogreg", "az-sejfrogregci", "certs", "dockerjfrog-prodhub"]
+    namespaceWhitelisted: ["simbha", "simbhapt"]

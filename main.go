@@ -19,6 +19,11 @@ func main() {
 		panic(err)
 	}
 
+	//load sync config.yml
+	if err := config.ReadSyncerConfig(); err != nil {
+		panic(err)
+	}
+
 	if !config.GetConfig().DisableCronJob {
 		if err := databases.InitializeMongoConnection(); err != nil {
 			panic(err)
