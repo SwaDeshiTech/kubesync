@@ -48,5 +48,7 @@ func main() {
 		if err := router.Run(fmt.Sprintf(":%d", config.GetConfig().Port)); err != nil {
 			panic(err)
 		}
+	} else {
+		select {}
 	}
 }
