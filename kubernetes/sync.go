@@ -16,7 +16,7 @@ type SyncResource struct {
 	SyncerConfig         config.Syncer
 }
 
-func SubscribeSyncResourcesToWatcher() {
+func SubscribeSyncResourcesToWatcher(namespaceChannel chan string) {
 	for _, resource := range config.GetSyncerConfig().SyncerConfigs {
 		go func() {
 			k8sKubeClient, err := client.GetClient()
@@ -29,7 +29,7 @@ func SubscribeSyncResourcesToWatcher() {
 				SourceNameSpace: resource.SourceNamespace,
 				SyncerConfig:    resource,
 			}
-			SubscribeToNamespaceChannel(CreateNamespaceChannel(), syncResource)
+			SubscribeToNamespaceChannel(namespaceChannel, syncResource)
 		}()
 	}
 }

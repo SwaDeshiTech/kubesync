@@ -34,14 +34,15 @@ func main() {
 		}()
 	}
 
+	namespaceChannel := kubernetes.CreateNamespaceChannel()
+
 	go func() {
+		log.Println("----Starting namespace watcher----")
 		k8sKubeClient, err := client.GetClient()
 		if err != nil {
 			log.Println("failed to obtain client set", err)
 			return
 		}
-
-		namespaceChannel := kubernetes.CreateNamespaceChannel()
 
 		namespaceWatcher := kubernetes.NameSpaceWatcher{
 			ClientSet:        k8sKubeClient,
@@ -51,12 +52,14 @@ func main() {
 		namespaceWatcher.Watch()
 	}()
 
-	if !config.GetConfig().DisableRESTController {
-		router := api.ServerV1()
-		if err := router.Run(fmt.Sprintf(":%d", config.GetConfig().Port)); err != nil {
-			panic(err)
-		}
-	} else {
-		select {}
+	go func() {
+		log.Println("----Subscribing sync resources to watcher----")
+		kubernetes.SubscribeSyncResourcesToWatcher(namespaceChannel)
+		log.Println("----Completed Subscribing sync resources to watcher----")
+	}()
+
+	router := api.ServerV1()
+	if err := router.Run(fmt.Sprintf(":%d", config.GetConfig().Port)); err != nil {
+		panic(err)
 	}
 }
