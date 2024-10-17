@@ -41,11 +41,14 @@ func main() {
 			return
 		}
 
+		namespaceChannel := kubernetes.CreateNamespaceChannel()
+
 		namespaceWatcher := kubernetes.NameSpaceWatcher{
-			ClientSet: k8sKubeClient,
+			ClientSet:        k8sKubeClient,
+			NamespaceChannel: namespaceChannel,
 		}
 
-		namespaceWatcher.Watcher()
+		namespaceWatcher.Watch()
 	}()
 
 	if !config.GetConfig().DisableRESTController {

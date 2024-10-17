@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"slices"
 
-	"github.com/SwaDeshiTech/kubesync/config"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -14,10 +12,11 @@ import (
 )
 
 type NameSpaceWatcher struct {
-	ClientSet *kubernetes.Clientset
+	ClientSet        *kubernetes.Clientset
+	NamespaceChannel chan string
 }
 
-func (namespaceWatcher *NameSpaceWatcher) Watcher() {
+func (namespaceWatcher *NameSpaceWatcher) Watch() {
 	// Watch for changes in namespaces
 	watcher, err := namespaceWatcher.ClientSet.CoreV1().Namespaces().Watch(context.Background(), metav1.ListOptions{})
 	if err != nil {
@@ -30,14 +29,22 @@ func (namespaceWatcher *NameSpaceWatcher) Watcher() {
 		switch event.Type {
 		case watch.Added:
 			namespaceName := event.Object.(*v1.Namespace).Name
-			if slices.Contains(config.GetConfig().WhitelistedNamespace, namespaceName) {
-				fmt.Printf("New namespace created: %s\n", namespaceName)
-				syncResource := SyncResource{
-					DestinationNameSpace: namespaceName,
-					SourceNameSpace:      "kubesync",
-				}
-				syncResource.SyncResources()
-			}
+			namespaceWatcher.NamespaceChannel <- namespaceName
+		}
+	}
+}
+
+func CreateNamespaceChannel() chan string {
+	return make(chan string)
+}
+
+func SubscribeToNamespaceChannel(namespaceChannel chan string, syncResource SyncResource) {
+	for {
+		select {
+		case namespace := <-namespaceChannel:
+			fmt.Println("Received new namespace:", namespace)
+			syncResource.DestinationNameSpace = namespace
+			syncResource.SyncResources()
 		}
 	}
 }

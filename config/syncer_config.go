@@ -11,8 +11,13 @@ import (
 var syncerConfig SyncerConfig
 
 type SyncerConfig struct {
+	SyncerConfigs []Syncer `yaml:"syncer"`
+}
+
+type Syncer struct {
 	Name                 string   `yaml:"name"`
-	WhitelistedNamespace []string `yaml:"whitelistedNamespace"`
+	SourceNamespace      string   `yaml:"sourceNamespace"`
+	DestinationNamespace []string `yaml:"destinationNamespace"`
 	ConfigMapList        []string `yaml:"configMapList"`
 	SecretList           []string `yaml:"secretList"`
 }
