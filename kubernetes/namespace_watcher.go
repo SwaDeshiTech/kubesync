@@ -39,13 +39,4 @@ func SubscribeToNamespaceChannel(broker *Broker, syncResource SyncResource) {
 	broker.Subscribe(subscriber, "namespace")
 
 	go subscriber.Listen(syncResource)
-
-	/*for {
-		select {
-		case namespace := <-namespaceChannel:
-			fmt.Println("Received new namespace:", namespace)
-			syncResource.DestinationNameSpace = namespace
-			syncResource.SyncResources()
-		}
-	}*/
 }
