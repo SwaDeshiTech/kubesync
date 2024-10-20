@@ -33,8 +33,8 @@ func main() {
 			cron.InitializeCrons()
 		}()
 	}
-
-	namespaceChannel := kubernetes.CreateNamespaceChannel()
+	// construct new broker.
+	broker := kubernetes.NewBroker()
 
 	go func() {
 		log.Println("----Starting namespace watcher----")
@@ -45,8 +45,8 @@ func main() {
 		}
 
 		namespaceWatcher := kubernetes.NameSpaceWatcher{
-			ClientSet:        k8sKubeClient,
-			NamespaceChannel: namespaceChannel,
+			ClientSet: k8sKubeClient,
+			Broker:    broker,
 		}
 
 		namespaceWatcher.Watch()
@@ -54,7 +54,7 @@ func main() {
 
 	go func() {
 		log.Println("----Subscribing sync resources to watcher----")
-		kubernetes.SubscribeSyncResourcesToWatcher(namespaceChannel)
+		kubernetes.SubscribeSyncResourcesToWatcher(broker)
 		log.Println("----Completed Subscribing sync resources to watcher----")
 	}()
 

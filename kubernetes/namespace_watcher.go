@@ -2,7 +2,6 @@ package kubernetes
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	v1 "k8s.io/api/core/v1"
@@ -12,8 +11,8 @@ import (
 )
 
 type NameSpaceWatcher struct {
-	ClientSet        *kubernetes.Clientset
-	NamespaceChannel chan string
+	ClientSet *kubernetes.Clientset
+	Broker    *Broker
 }
 
 func (namespaceWatcher *NameSpaceWatcher) Watch() {
@@ -29,22 +28,24 @@ func (namespaceWatcher *NameSpaceWatcher) Watch() {
 		switch event.Type {
 		case watch.Added:
 			namespaceName := event.Object.(*v1.Namespace).Name
-			namespaceWatcher.NamespaceChannel <- namespaceName
+			go namespaceWatcher.Broker.Publish("namespace", namespaceName)
 		}
 	}
 }
 
-func CreateNamespaceChannel() chan string {
-	return make(chan string)
-}
+func SubscribeToNamespaceChannel(broker *Broker, syncResource SyncResource) {
 
-func SubscribeToNamespaceChannel(namespaceChannel chan string, syncResource SyncResource) {
-	for {
+	subscriber := broker.AddSubscriber()
+	broker.Subscribe(subscriber, "namespace")
+
+	go subscriber.Listen(syncResource)
+
+	/*for {
 		select {
 		case namespace := <-namespaceChannel:
 			fmt.Println("Received new namespace:", namespace)
 			syncResource.DestinationNameSpace = namespace
 			syncResource.SyncResources()
 		}
-	}
+	}*/
 }
