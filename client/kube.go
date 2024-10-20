@@ -16,7 +16,7 @@ func GetClient() (*kubernetes.Clientset, error) {
 	// Load the kubeconfig from a file
 	kubeconfig := os.Getenv("KUBECONFIG")
 	if kubeconfig == "" {
-		kubeconfig = "~/.kube/config"
+		kubeconfig = "/root/.kube/config"
 	}
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
