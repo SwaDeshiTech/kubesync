@@ -13,15 +13,18 @@ func SyncConfigMap(clientset *kubernetes.Clientset, sourceNamespace, targetNames
 	ctx := context.Background()
 
 	// Get the ConfigMap from the source namespace
-	configMap, err := clientset.CoreV1().ConfigMaps(sourceNamespace).Get(ctx, configMapName, metav1.GetOptions{})
+	sourceConfigMap, err := clientset.CoreV1().ConfigMaps(sourceNamespace).Get(ctx, configMapName, metav1.GetOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to get ConfigMap %s from namespace %s: %w", configMapName, sourceNamespace, err)
 	}
 
 	// Create a new ConfigMap in the target namespace with the same data
-	targetConfigMap := configMap.DeepCopy()
+	targetConfigMap := sourceConfigMap.DeepCopy()
 	targetConfigMap.Namespace = targetNamespace
-	targetConfigMap.ObjectMeta.ResourceVersion = ""
+
+	if !checkIfConfigMapExists(ctx, clientset, configMapName, targetNamespace) {
+		targetConfigMap.ObjectMeta.ResourceVersion = ""
+	}
 
 	_, err = clientset.CoreV1().ConfigMaps(targetNamespace).Create(ctx, targetConfigMap, metav1.CreateOptions{})
 	if err != nil {
@@ -40,4 +43,13 @@ func SyncConfigMap(clientset *kubernetes.Clientset, sourceNamespace, targetNames
 	}
 
 	return nil
+}
+
+func checkIfConfigMapExists(ctx context.Context, clientset *kubernetes.Clientset, configMapName, namespace string) bool {
+	// Get the ConfigMap from the namespace
+	_, err := clientset.CoreV1().ConfigMaps(namespace).Get(ctx, configMapName, metav1.GetOptions{})
+	if err != nil && errors.IsAlreadyExists(err) {
+		return true
+	}
+	return false
 }
