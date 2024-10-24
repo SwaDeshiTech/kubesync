@@ -6,7 +6,7 @@
 # Tools and Libraries
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=kubernetes,go,mongo" />
+    <img src="https://skillicons.dev/icons?i=kubernetes,go,mongo,azure" />
   </a>
 </p>
 
