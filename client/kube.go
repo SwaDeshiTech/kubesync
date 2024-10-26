@@ -30,6 +30,8 @@ func GetClient(kubeConfigPath string) (*kubernetes.Clientset, error) {
 
 func LoadKubernestesClients() {
 
+	K8sClientSetMap = make(map[string]*kubernetes.Clientset)
+
 	kubeConfigFolderPath := config.GetConfig().KubeConfigPath
 
 	files, err := ioutil.ReadDir(kubeConfigFolderPath)
