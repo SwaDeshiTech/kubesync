@@ -1,6 +1,7 @@
 syncer:
-  - name: qa_cluster
-    sourceNamespace: kubesync
-    destinationNamespace: ["simbha", "simbhapt"]
+  - name: "syncer1"
+    sourceNamespace: "kubesync"
+    destinationNamespace: ["simbha"]
     configMapList: ["confs"]
     secretList: ["prodhub"]
+    k8sClusterName: "dev-cluster"

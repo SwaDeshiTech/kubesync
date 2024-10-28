@@ -13,6 +13,7 @@ var config Config
 
 type Config struct {
 	Port                 int64    `yaml:"port"`
+	KubeConfigPath       string   `yaml:"kubeConfigPath"`
 	Mongo                Mongo    `yaml:"mongo"`
 	DisableCronJob       bool     `yaml:"disableCronJob"`
 	WhitelistedNamespace []string `yaml:"whitelistedNamespace"`
@@ -39,16 +40,20 @@ func ReadConfig() error {
 
 	configYaml := filepath.Join(configFolder, "config.yml")
 
+	log.Printf("----reading config from %s----", configYaml)
+
 	configData, err := ioutil.ReadFile(configYaml)
 	if err != nil {
-		log.Println(err)
+		log.Println("----error in reading config file----", err)
 		return err
 	}
+
+	log.Printf("----finished reading config from %s----", configYaml)
 
 	config = Config{}
 	err = yaml.Unmarshal([]byte(configData), &config)
 	if err != nil {
-		log.Println(err)
+		log.Println("----error in Unmarshaling config----", err)
 		return err
 	}
 

@@ -1,25 +1,20 @@
 package client
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
 
+	"github.com/SwaDeshiTech/kubesync/config"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-type KubeClient struct {
-	ClientSet *kubernetes.Clientset
-}
+var K8sClientSetMap map[string]*kubernetes.Clientset
 
-func GetClient() (*kubernetes.Clientset, error) {
-	// Load the kubeconfig from a file
-	kubeconfig := os.Getenv("KUBECONFIG")
-	if kubeconfig == "" {
-		kubeconfig = "/root/.kube/config"
-	}
+func GetClient(kubeConfigPath string) (*kubernetes.Clientset, error) {
 
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,4 +26,29 @@ func GetClient() (*kubernetes.Clientset, error) {
 	}
 
 	return clientset, nil
+}
+
+func LoadKubernestesClients() {
+
+	K8sClientSetMap = make(map[string]*kubernetes.Clientset)
+
+	kubeConfigFolderPath := config.GetConfig().KubeConfigPath
+
+	files, err := ioutil.ReadDir(kubeConfigFolderPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("----started loading k8s client----")
+
+	for _, file := range files {
+		k8sClientSet, err := GetClient(fmt.Sprintf("%s/%s", kubeConfigFolderPath, file.Name()))
+		if err != nil {
+			log.Printf("---error loading kubeconfig file for %s---%v", file.Name(), err)
+			continue
+		}
+		K8sClientSetMap[file.Name()] = k8sClientSet
+	}
+
+	log.Println("----finished loading k8s client----")
 }

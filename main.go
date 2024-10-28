@@ -24,6 +24,9 @@ func main() {
 		panic(err)
 	}
 
+	//load kubernestes client
+	client.LoadKubernestesClients()
+
 	if !config.GetConfig().DisableCronJob {
 		if err := databases.InitializeMongoConnection(); err != nil {
 			panic(err)
@@ -37,19 +40,18 @@ func main() {
 	broker := kubernetes.NewBroker()
 
 	go func() {
+
 		log.Println("----Starting namespace watcher----")
-		k8sKubeClient, err := client.GetClient()
-		if err != nil {
-			log.Println("failed to obtain client set", err)
-			return
-		}
 
-		namespaceWatcher := kubernetes.NameSpaceWatcher{
-			ClientSet: k8sKubeClient,
-			Broker:    broker,
-		}
+		for _, k8sClientSet := range client.K8sClientSetMap {
 
-		namespaceWatcher.Watch()
+			namespaceWatcher := kubernetes.NameSpaceWatcher{
+				ClientSet: k8sClientSet,
+				Broker:    broker,
+			}
+
+			namespaceWatcher.Watch()
+		}
 	}()
 
 	go func() {

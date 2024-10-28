@@ -20,6 +20,7 @@ type Syncer struct {
 	DestinationNamespace []string `yaml:"destinationNamespace"`
 	ConfigMapList        []string `yaml:"configMapList"`
 	SecretList           []string `yaml:"secretList"`
+	K8sClusterName       string   `yaml:"k8sClusterName"`
 }
 
 func ReadSyncerConfig() error {

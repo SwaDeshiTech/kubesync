@@ -19,13 +19,8 @@ type SyncResource struct {
 func SubscribeSyncResourcesToWatcher(broker *Broker) {
 	for _, resource := range config.GetSyncerConfig().SyncerConfigs {
 		go func() {
-			k8sKubeClient, err := client.GetClient()
-			if err != nil {
-				log.Println("failed to obtain client set", err)
-				return
-			}
 			syncResource := SyncResource{
-				K8sClient:       k8sKubeClient,
+				K8sClient:       client.K8sClientSetMap[resource.K8sClusterName],
 				SourceNameSpace: resource.SourceNamespace,
 				SyncerConfig:    resource,
 			}

@@ -1,5 +1,6 @@
 port: 8443
 disableCronJob: true
+kubeConfigPath: "/root/.kube/"
 mongo:
   uri: "mongodb://localhost:27017"
   username: "admin"
