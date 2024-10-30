@@ -1,29 +1,25 @@
-name: Auto-Generate PR Description and Create PR
+name: Update PR Description
+
 on:
-  push:
-    branches: [/*]
+  pull_request:
+    types: [opened]
+    branches: [main]
 
 jobs:
-  generate-description:
+  update-pr-description:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-      - run: npm install
-      - run: npm run generate-description
       - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUBREPO_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const description = require('./generated-description.md');
-            const headRef = context.ref.split('/').pop();
-            github.rest.pulls.create({
+            const prNumber = context.payload.pull_request.number;
+            const newDescription = "This is the updated PR description."; // Replace with your desired description
+
+            github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 'Feature: ' + headRef,
-              head: headRef,
-              base: 'master',
-              body: description
+              issue_number: prNumber,
+              body: newDescription
             });
