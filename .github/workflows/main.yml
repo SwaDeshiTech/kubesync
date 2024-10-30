@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUBREPO_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
             const newDescription = "This is the updated PR description."; // Replace with your desired description
