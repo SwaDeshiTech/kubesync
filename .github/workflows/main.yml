@@ -1,0 +1,29 @@
+name: Auto-Generate PR Description and Create PR
+on:
+  push:
+    branches: [/*]
+
+jobs:
+  generate-description:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm install
+      - run: npm run generate-description
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const description = require('./generated-description.md');
+            const headRef = context.ref.split('/').pop();
+            github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Feature: ' + headRef,
+              head: headRef,
+              base: 'master',
+              body: description
+            });
