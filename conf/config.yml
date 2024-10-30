@@ -9,4 +9,4 @@ mongo:
   minPoolSize: 10
   maxIdleTime: 5
   maxConnIdleTime: 10
-  connectTimeout: 10
+  connectTimeout: 11
