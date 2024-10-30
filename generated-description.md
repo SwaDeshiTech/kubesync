@@ -8,6 +8,6 @@ This pull request introduces the following:
 * **Testing:**
     * [Explain how you tested the feature and ensure quality]
 * **Known Issues (Optional):**
-    * [List any known issues or limitations of the feature]
+    * [ations of the feature]
 
 **Please review and provide feedback.**
