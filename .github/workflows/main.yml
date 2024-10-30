@@ -15,7 +15,7 @@ jobs:
       - run: npm run generate-description
       - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUBREPO_TOKEN }}
           script: |
             const description = require('./generated-description.md');
             const headRef = context.ref.split('/').pop();
