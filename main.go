@@ -19,6 +19,14 @@ func main() {
 		panic(err)
 	}
 
+	//load sync config.yml
+	if err := config.ReadSyncerConfig(); err != nil {
+		panic(err)
+	}
+
+	//load kubernestes client
+	client.LoadKubernestesClients()
+
 	if !config.GetConfig().DisableCronJob {
 		if err := databases.InitializeMongoConnection(); err != nil {
 			panic(err)
@@ -28,25 +36,32 @@ func main() {
 			cron.InitializeCrons()
 		}()
 	}
+	// construct new broker.
+	broker := kubernetes.NewBroker()
 
 	go func() {
-		k8sKubeClient, err := client.GetClient()
-		if err != nil {
-			log.Println("failed to obtain client set", err)
-			return
-		}
 
-		namespaceWatcher := kubernetes.NameSpaceWatcher{
-			ClientSet: k8sKubeClient,
-		}
+		log.Println("----Starting namespace watcher----")
 
-		namespaceWatcher.Watcher()
+		for _, k8sClientSet := range client.K8sClientSetMap {
+
+			namespaceWatcher := kubernetes.NameSpaceWatcher{
+				ClientSet: k8sClientSet,
+				Broker:    broker,
+			}
+
+			namespaceWatcher.Watch()
+		}
 	}()
 
-	if !config.GetConfig().DisableRESTController {
-		router := api.ServerV1()
-		if err := router.Run(fmt.Sprintf(":%d", config.GetConfig().Port)); err != nil {
-			panic(err)
-		}
+	go func() {
+		log.Println("----Subscribing sync resources to watcher----")
+		kubernetes.SubscribeSyncResourcesToWatcher(broker)
+		log.Println("----Completed Subscribing sync resources to watcher----")
+	}()
+
+	router := api.ServerV1()
+	if err := router.Run(fmt.Sprintf(":%d", config.GetConfig().Port)); err != nil {
+		panic(err)
 	}
 }

@@ -21,6 +21,7 @@ func SyncSecret(clientset *kubernetes.Clientset, sourceNamespace, targetNamespac
 	// Create a new Secret in the target namespace with the same data
 	targetSecret := secret.DeepCopy()
 	targetSecret.Namespace = targetNamespace
+	targetSecret.ObjectMeta.ResourceVersion = ""
 
 	_, err = clientset.CoreV1().Secrets(targetNamespace).Create(ctx, targetSecret, metav1.CreateOptions{})
 	if err != nil {

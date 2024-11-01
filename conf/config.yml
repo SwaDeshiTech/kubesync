@@ -1,7 +1,6 @@
 port: 8443
 disableCronJob: true
-disableRESTController: true
-whitelistedNamespace: ["simbha", "simbhapt"]
+kubeConfigPath: "/root/.kube/"
 mongo:
   uri: "mongodb://localhost:27017"
   username: "admin"
@@ -10,4 +9,4 @@ mongo:
   minPoolSize: 10
   maxIdleTime: 5
   maxConnIdleTime: 10
-  connectTimeout: 10
+  connectTimeout: 11

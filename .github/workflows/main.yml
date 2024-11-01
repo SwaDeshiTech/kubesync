@@ -1,0 +1,35 @@
+name: Update PR Description from Markdown
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+
+jobs:
+  update-pr-description:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUBREPO_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const prNumber = context.payload.pull_request.number;
+            const markdownFilePath = path.join('.github', 'templates', 'pr-description.md');
+
+            fs.readFile(markdownFilePath, 'utf8', (err, data) => {
+              if (err) {
+                console.error('Error reading file:', err);
+                return;
+              }
+
+              github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: data
+              });
+            });
