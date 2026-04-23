@@ -73,7 +73,18 @@ func (s *Subscriber) Signal(msg *Message) {
 	}
 }
 
-func (s *Subscriber) Listen(syncResource SyncResource) {
+func (s *Subscriber) ListenNamespace(syncResource SyncResource) {
+	// Listens to the message channel, prints once received.
+	for {
+		if msg, ok := <-s.messages; ok {
+			fmt.Printf("Subscriber %s, received: %s from topic: %s\n", s.id, msg.GetMessageBody(), msg.GetTopic())
+			syncResource.DestinationNameSpace = msg.body
+			syncResource.SyncResources()
+		}
+	}
+}
+
+func (s *Subscriber) ListenConfigMap(syncResource SyncResource) {
 	// Listens to the message channel, prints once received.
 	for {
 		if msg, ok := <-s.messages; ok {

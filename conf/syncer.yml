@@ -1,7 +1,11 @@
 syncer:
   - name: "syncer1"
-    sourceNamespace: "kubesync"
-    destinationNamespace: ["simbha"]
-    configMapList: ["confs"]
-    secretList: ["prodhub"]
+    configMap: 
+      list: ["confs"]
+      sourceNamespace: "kubesync"
+      destinationNamespace: ["simbha"]
+    secret: 
+      list: ["prodhub"]
+      sourceNamespace: "kubesync"
+      destinationNamespace: ["simbha"]
     k8sClusterName: "dev-cluster"

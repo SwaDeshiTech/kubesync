@@ -36,9 +36,11 @@ func main() {
 			cron.InitializeCrons()
 		}()
 	}
+
 	// construct new broker.
 	broker := kubernetes.NewBroker()
 
+	//namespace watcher
 	go func() {
 
 		log.Println("----Starting namespace watcher----")
@@ -52,6 +54,11 @@ func main() {
 
 			namespaceWatcher.Watch()
 		}
+	}()
+
+	//configmap watcher
+	go func() {
+		kubernetes.SubscribeToConfigMapChange()
 	}()
 
 	go func() {

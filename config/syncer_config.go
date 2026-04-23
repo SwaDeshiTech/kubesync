@@ -15,12 +15,22 @@ type SyncerConfig struct {
 }
 
 type Syncer struct {
-	Name                 string   `yaml:"name"`
+	Name           string    `yaml:"name"`
+	ConfigMap      ConfigMap `yaml:"configMap"`
+	Secret         Secret    `yaml:"secret"`
+	K8sClusterName string    `yaml:"k8sClusterName"`
+}
+
+type ConfigMap struct {
+	List                 []string `yaml:"list"`
 	SourceNamespace      string   `yaml:"sourceNamespace"`
 	DestinationNamespace []string `yaml:"destinationNamespace"`
-	ConfigMapList        []string `yaml:"configMapList"`
-	SecretList           []string `yaml:"secretList"`
-	K8sClusterName       string   `yaml:"k8sClusterName"`
+}
+
+type Secret struct {
+	List                 []string `yaml:"list"`
+	SourceNamespace      string   `yaml:"sourceNamespace"`
+	DestinationNamespace []string `yaml:"destinationNamespace"`
 }
 
 func ReadSyncerConfig() error {
