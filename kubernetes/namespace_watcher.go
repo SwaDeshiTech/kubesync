@@ -38,5 +38,5 @@ func SubscribeToNamespaceChannel(broker *Broker, syncResource SyncResource) {
 	subscriber := broker.AddSubscriber()
 	broker.Subscribe(subscriber, "namespace")
 
-	go subscriber.Listen(syncResource)
+	go subscriber.ListenNamespace(syncResource)
 }

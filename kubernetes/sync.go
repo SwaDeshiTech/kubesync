@@ -37,7 +37,7 @@ func (syncResource *SyncResource) SyncResources() {
 
 	log.Printf("----Executing syncer %s syncing resource from namespace %s to %s----", syncResource.SyncerConfig.Name, syncResource.SourceNameSpace, syncResource.DestinationNameSpace)
 
-	for _, configMapSyncer := range syncResource.SyncerConfig.ConfigMapList {
+	for _, configMapSyncer := range syncResource.SyncerConfig.ConfigMap.List {
 		configMapSyncer := SyncK8s{
 			ClientSet:            syncResource.K8sClient,
 			SourceNameSpace:      syncResource.SourceNameSpace,
@@ -47,7 +47,7 @@ func (syncResource *SyncResource) SyncResources() {
 		configMapSyncer.SyncConfigMap()
 	}
 
-	for _, secretSyncer := range syncResource.SyncerConfig.SecretList {
+	for _, secretSyncer := range syncResource.SyncerConfig.Secret.List {
 		secretSyncer := SyncK8s{
 			ClientSet:            syncResource.K8sClient,
 			SourceNameSpace:      syncResource.SourceNameSpace,
