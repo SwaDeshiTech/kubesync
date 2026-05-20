@@ -6,11 +6,8 @@ import (
 	"fmt"
 	"log"
 
-	v1 "github.com/SwaDeshiTech/arsenal/pkg/mongo-connector/v1"
-	"github.com/SwaDeshiTech/kubesync/dto"
-	"github.com/SwaDeshiTech/kubesync/entity"
+	"github.com/SwaDeshiTech/kubesync/config"
 	"github.com/robfig/cron"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type CronJob interface {
@@ -39,12 +36,12 @@ func NewCronFactory(handlers map[string]CronHandler) *CronFactory {
 	}
 }
 
-func (f *CronFactory) NewCronGroup(config dto.CronConfig) (CronConsumer, error) {
+func (f *CronFactory) NewCronGroup(priority string) (CronConsumer, error) {
 
 	newCronGroup := cron.New()
 
 	return CronConsumer{
-		CronGroupName: config.CronGroupName,
+		CronGroupName: priority,
 		CronGroup:     *newCronGroup,
 		Handlers:      f.Handlers,
 	}, nil
@@ -52,28 +49,23 @@ func (f *CronFactory) NewCronGroup(config dto.CronConfig) (CronConsumer, error) 
 
 func (c *CronConsumer) InitializeCrons(ctx context.Context) error {
 
-	filters := bson.M{"isActive": true, "priority": c.CronGroupName}
-	sort := bson.D{{Key: "priority", Value: 1}}
-
-	resultCriteria := v1.ResultCriteria{
-		Filters: filters,
-		Sort:    sort,
+	jobList := config.GetConfig().CronSchedules
+	filtered := make([]config.CronSchedule, 0, len(jobList))
+	for _, job := range jobList {
+		if !job.IsActive || job.Priority != c.CronGroupName {
+			continue
+		}
+		filtered = append(filtered, job)
 	}
 
-	jobList, err := entity.FetchCronScheduleConfigs(resultCriteria)
-	if err != nil {
-		log.Println("failed to fetch the list of cron job", err)
-		return err
-	}
-
-	if len(jobList) == 0 {
+	if len(filtered) == 0 {
 		log.Println("no job to schedule")
 		return errors.New(fmt.Sprintf("job list is empty for %s", c.CronGroupName))
 	}
 
 	log.Println("-----started scheduling cron jobs-----")
 
-	for _, job := range jobList {
+	for _, job := range filtered {
 		c.CronGroup.AddFunc(job.CronExpression, func() {
 			err := c.Handlers[job.JobType].ExecuteCron(job.UUID)
 			if err != nil {

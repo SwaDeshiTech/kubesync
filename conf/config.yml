@@ -1,12 +1,39 @@
 port: 8443
 disableCronJob: true
 kubeConfigPath: "/root/.kube/"
-mongo:
-  uri: "mongodb://localhost:27017"
-  username: "admin"
-  password: "password"
-  maxPoolSize: 100
-  minPoolSize: 10
-  maxIdleTime: 5
-  maxConnIdleTime: 10
-  connectTimeout: 11
+useServiceAccount: true
+serviceAccountName: "in-cluster"
+cronSchedules:
+  - uuid: "sync-configs"
+    cronExpression: "@every 1m"
+    jobName: "Sync Kubernetes Resources"
+    jobDescription: "Keeps ConfigMaps and Secrets synchronized"
+    startDate: ""
+    endDate: ""
+    priority: "P0"
+    frequency: "DAILY"
+    jobType: "SyncKubernetesResourcesJob"
+    resources:
+      - name: "example-config"
+        type: "configmap"
+      - name: "example-secret"
+        type: "secret"
+    isActive: true
+k8sClusters:
+  - name: "in-cluster"
+    displayName: "In-cluster Cluster"
+    endpoint: ""
+    serverID: ""
+    clientID: ""
+    tenantID: ""
+    kubeServerIP: ""
+    certificateAuthority: ""
+    isActive: true
+syncers:
+  - name: "syncer1"
+    sourceNamespace: "kubesync"
+    destinationNamespace: ["*"]
+    configMapList: []
+    secretList: ["dockerhub"]
+    k8sClusterName: "in-cluster"
+    skipNamespace: ["cicaptain", "cloudedgedeployer", "default", "gateway", "gke-managed-cim", "gke-managed-networking-dra-driver", "gke-managed-system", "gke-managed-volumepopulator", "gmp-public", "gmp-system", "ingress-nginx", "kube-node-lease", "kube-public", "kube-system", "prodhub", "prodhubstatic", "prodhubui"]
