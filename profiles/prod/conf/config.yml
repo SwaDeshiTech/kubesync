@@ -1,0 +1,38 @@
+port: 8443
+disableCronJob: true
+useServiceAccount: true
+serviceAccountName: "in-cluster"
+cronSchedules:
+  - uuid: "sync-configs"
+    cronExpression: "@every 1m"
+    jobName: "Sync Kubernetes Resources"
+    jobDescription: "Keeps ConfigMaps and Secrets synchronized"
+    startDate: ""
+    endDate: ""
+    priority: "P0"
+    frequency: "DAILY"
+    jobType: "SyncKubernetesResourcesJob"
+    resources:
+      - name: "example-config"
+        type: "configmap"
+      - name: "example-secret"
+        type: "secret"
+    isActive: true
+k8sClusters:
+  - name: "in-cluster"
+    displayName: "In-cluster Cluster"
+    endpoint: ""
+    serverID: ""
+    clientID: ""
+    tenantID: ""
+    kubeServerIP: ""
+    certificateAuthority: ""
+    isActive: true
+syncers:
+  - name: "syncer1"
+    sourceNamespace: "kubesync"
+    destinationNamespace: [cicaptain, cloudedgedeployer, default, gateway, gke-managed-cim, gke-managed-networking-dra-driver, gke-managed-system, gke-managed-volumepopulator, gmp-public, gmp-system, ingress-nginx, kube-node-lease, kube-public, kube-system, prodhub, prodhubstatic, prodhubui]
+    configMapList: []
+    secretList: ["prodhub"]
+    k8sClusterName: "in-cluster"
+    skipNamespace: ["kube-system", "ingress-nginx"]

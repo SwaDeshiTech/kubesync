@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/SwaDeshiTech/kubesync/dto"
 	"github.com/SwaDeshiTech/kubesync/enums"
 	"github.com/SwaDeshiTech/kubesync/services/job"
 )
@@ -18,10 +17,7 @@ func InitializeCrons() error {
 	factory := job.NewCronFactory(handlers)
 
 	for _, priority := range enums.P0.Values() {
-		cronGroupConfig := dto.CronConfig{
-			CronGroupName: priority,
-		}
-		cronGroup, err := factory.NewCronGroup(cronGroupConfig)
+		cronGroup, err := factory.NewCronGroup(priority)
 		if err != nil {
 			log.Println("failed to get cron group from factory", err)
 		}

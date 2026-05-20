@@ -1,0 +1,17 @@
+replicaCount: 1
+image:
+  repository: "kubesync"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+port: 8443
+conf:
+  configFolder: /etc/kubesync/conf
+  configMap: "kubesync-config"
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+env:
+  - name: "CONFIG_FOLDER"
+    value: "/etc/kubesync/conf"
+imagePullSecrets: []

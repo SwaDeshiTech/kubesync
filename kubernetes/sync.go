@@ -16,8 +16,21 @@ type SyncResource struct {
 	SyncerConfig         config.Syncer
 }
 
+func shouldProcessNamespace(syncer config.Syncer, namespace string) bool {
+	for _, dest := range syncer.DestinationNamespace {
+		if dest == "*" {
+			return true
+		}
+		if dest == namespace {
+			return true
+		}
+	}
+	return false
+}
+
 func SubscribeSyncResourcesToWatcher(broker *Broker) {
-	for _, resource := range config.GetSyncerConfig().SyncerConfigs {
+	for _, resource := range config.GetConfig().Syncers {
+		resource := resource
 		go func() {
 			syncResource := SyncResource{
 				K8sClient:       client.K8sClientSetMap[resource.K8sClusterName],
@@ -31,7 +44,11 @@ func SubscribeSyncResourcesToWatcher(broker *Broker) {
 
 func (syncResource *SyncResource) SyncResources() {
 
-	if !slices.Contains(syncResource.SyncerConfig.DestinationNamespace, syncResource.DestinationNameSpace) {
+	if slices.Contains(syncResource.SyncerConfig.SkipNamespace, syncResource.DestinationNameSpace) {
+		return
+	}
+
+	if !shouldProcessNamespace(syncResource.SyncerConfig, syncResource.DestinationNameSpace) {
 		return
 	}
 
