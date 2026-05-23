@@ -73,6 +73,10 @@ func ReadConfig() error {
 	flag.StringVar(&configFolder, "configFolder", "conf", "Config folder")
 	flag.Parse()
 
+	if os.Getenv("CONFIG_FOLDER") != "" {
+		configFolder = os.Getenv("CONFIG_FOLDER")
+	}
+
 	configYaml := filepath.Join(configFolder, "config.yml")
 
 	log.Printf("----reading config from %s----", configYaml)
