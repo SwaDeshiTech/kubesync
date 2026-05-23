@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/SwaDeshiTech/kubesync/enums"
