@@ -31,7 +31,7 @@ k8sClusters:
     isActive: true
 syncers:
   - name: "syncer1"
-    sourceNamespace: "kubesync"
+    sourceNamespace: "kube-syncer"
     destinationNamespace: ["*"]
     configMapList: []
     secretList: ["dockerhub"]

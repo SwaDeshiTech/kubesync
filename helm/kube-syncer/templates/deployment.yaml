@@ -14,6 +14,7 @@ spec:
       labels:
         {{- include "kube-syncer.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "kube-syncer.fullname" . }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- range .Values.imagePullSecrets }}
