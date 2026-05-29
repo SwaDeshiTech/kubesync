@@ -32,6 +32,6 @@ syncers:
   - name: "syncer1"
     sourceNamespace: "kube-syncer"
     destinationNamespace: ["*"]
-    secretList: ["prodhub"]
+    secretList: ["prodhub", "dockerhub"]
     k8sClusterName: "in-cluster"
     skipNamespace: ["cicaptain", "cloudedgedeployer", "default", "gateway", "gke-managed-cim", "gke-managed-networking-dra-driver", "gke-managed-system", "gke-managed-volumepopulator", "gmp-public", "gmp-system", "ingress-nginx", "kube-node-lease", "kube-public", "kube-system", "prodhub", "prodhubstatic", "prodhubui"]
