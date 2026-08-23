@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
-  repository: "kubesync"
-  tag: "latest"
+  repository: "harry2654/prodhub"
+  tag: "kubesync-production-1231966-d96cb1a"
   pullPolicy: IfNotPresent
 port: 8443
 conf:
@@ -14,4 +14,5 @@ affinity: {}
 env:
   - name: "CONFIG_FOLDER"
     value: "/etc/kubesync/conf"
-imagePullSecrets: []
+imagePullSecrets:
+  - dockerhub-secret
